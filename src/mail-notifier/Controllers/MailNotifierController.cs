@@ -23,11 +23,13 @@ namespace mail_notifier.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> SetUpVessel([FromBody]MailInfo args)
+        public ActionResult<string> SendMail([FromBody]MailInfo info)
         {
             try
             {
-                return _service.SetUpVessel(args);
+                var response =  _service.CreateAndSendMail(info).Result;
+                 _logger.LogInformation(response.StatusCode.ToString());
+                return Ok("Mail Send succesfully");
             }
             catch (Exception x)
             {
