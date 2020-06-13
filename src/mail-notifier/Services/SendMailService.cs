@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using mail_notifier.Models;
 using Microsoft.Extensions.Configuration;
@@ -10,23 +12,22 @@ namespace mail_notifier.Services
     public class SendMailService
     {
         private static IConfiguration _config;
-        private static string TOKEN;
-        private const string SUBJECT = "your civil service appointment";
+        private const string SUBJECT = "Your civil service appointment";
         public SendMailService(IConfiguration config)
         {;
             _config = config;
-            TOKEN = config.GetValue<string>("token");
         }
         public async Task<Response> CreateAndSendMail(MailInfo info)
         {
-            SendGridClient client = new SendGridClient(TOKEN);
-            EmailAddress from = new EmailAddress("mail-notifier@easy-appointment.com", "Easy Apointment");
+            string apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+            SendGridClient client = new SendGridClient(apiKey);
+            EmailAddress from = new EmailAddress("itp18406@hua.gr", "Easy Apointment");
             EmailAddress to = new EmailAddress(info.email,null);
-            string plainTextContent = @$"{info.userName}, {info.userSurname} \n
-                                         Your appointment at {info.appointmentPlace}
-                                         is succesfully arange for {info.appointmentDate.ToLongDateString()}";
-            string htmlContent = "<strong>for any futher clarification please feel free to contact us!</strong>";
-            var msg = MailHelper.CreateSingleEmail(from, to, SUBJECT, plainTextContent, htmlContent);
+            string htmlContent = @"<strong>"+info.userName +" " + info.userSurname + "</strong>"+
+                                     "<br>Your appointment at  <ins>" + info.appointmentPlace +
+                                     "</ins> is succesfully arange for <ins>" + info.appointmentDate.ToLongDateString()+ "</ins>" +
+                                     "<br> <strong>For any futher clarification please feel free to contact us!</strong>";
+            var msg = MailHelper.CreateSingleEmail(from, to, SUBJECT,null,htmlContent);
             var response = await client.SendEmailAsync(msg);
             return response;
         }
