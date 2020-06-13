@@ -25,7 +25,7 @@ namespace mail_notifier.Services
             EmailAddress to = new EmailAddress(info.email,null);
             string htmlContent = @"<strong>"+info.userName +" " + info.userSurname + "</strong>"+
                                      "<br>Your appointment at  <ins>" + info.appointmentPlace +
-                                     "</ins> is succesfully arange for <ins>" + info.appointmentDate.ToLongDateString()+ "</ins>" +
+                                     "</ins> has been  succesfully aranged for <ins>" + info.appointmentDate.ToString("MM/dd/yy H:mm")+ "</ins>" +
                                      "<br> <strong>For any futher clarification please feel free to contact us!</strong>";
             var msg = MailHelper.CreateSingleEmail(from, to, SUBJECT,null,htmlContent);
             var response = await client.SendEmailAsync(msg);

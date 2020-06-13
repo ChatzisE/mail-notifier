@@ -31,6 +31,7 @@ namespace mail_notifier.Controllers
             {
                 var response = _service.CreateAndSendMail(info).Result;
                 _logger.LogInformation(response.StatusCode.ToString());
+                Console.WriteLine(response.StatusCode.ToString());
                 if (response.StatusCode == HttpStatusCode.Accepted)
                     return Ok("Mail Send succesfully");
                 else throw new Exception(response.StatusCode.ToString());
