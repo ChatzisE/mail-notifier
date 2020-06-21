@@ -23,6 +23,13 @@ namespace mail_notifier.Controllers
             _logger = logger;
             _service = service;
         }
+        [HttpGet]
+        [Route("Test")]
+        public ActionResult<string> Test()
+        {
+            return Ok("Eimai entaksei ok");
+
+        }
 
         [HttpPost]
         public ActionResult<string> SendMail([FromBody] MailInfo info)
